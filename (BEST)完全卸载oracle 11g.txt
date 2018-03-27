@@ -1,0 +1,13 @@
+【完全卸载oracle 11g】
+
+1.停用oracle服务：
+通过命令services.msc或控制面板中的管理工具，进入计算机管理或服务管理，在服务中，找到oracle开头的所有服务，右击选择停止；
+2.在开始菜单中，找到Universal Installer，运行Oracle Universal Installer，单击卸载产品；
+3.在产品清单窗口中，单击全部展开，除了OraDb11g_home1外，勾选其他项目，单击删除；
+4.按Windows徽标键和R键，打开运行窗口，输入regedit进入注册表，展开HKEY_LOCAL_MACHINE\SOFTWARE，找到oracle，删除之；
+5.依次展开HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services中，删除所有oracle开头的项;
+(Ctrl+F 查找    F3  重复查找)
+6.依次展开HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Eventlog\Application，删除所有oracle开头的项；
+7.在HKEY_CLASSES_ROOT，删除以ora开头的项；
+8.重启电脑，删除oracle相关目录，删除Oracle的安装目录app等。
+（用F3，输入oracle和app去找，然后全部删除以上两个目录。）

@@ -1,0 +1,26 @@
+
+Oracle 11g服务OracleDBConsoleorcl启动失败
+
+OracleDBConsoleorcl：Oracle数据库控制台服务，orcl是Oracle的实例标识，默认的实例为orcl。在运行Enterprise Manager(企业管理器OEM)的时候，需要启动这个服务。(非必须启动)，但是有时候当我们修改了主机名或改变了ip地址后这个服务会启动不了，导致em访问不了。
+
+方法/步骤:
+
+1.打开cmd，输入“emca -repos drop”（不包括双引号，下同），先删除原来的配置，其中需要输入：
+数据库 SID: ORCL监听程序端口号: 1521 SYS 用户的口令: SYSMAN 用户的口令
+
+
+2.继续输入“emca -repos create”，创建新的配置，其中需要输入：
+数据库 SID: ORCL监听程序端口号: 1521 SYS 用户的口令: SYSMAN 用户的口令
+
+
+3.继续输入“emca -config dbcontrol db ”，重新配置dbcontrol
+
+
+
+4.以上三步完成之后，输入“set ORACLE_UNQNAME=ORCL”，按回车键，设置环境变量，再次输入“emctl start dbconsole”，按回车键启动服务。提示服务启动成功，duang，成功了。
+
+
+
+
+
+7:32 2017/2/22   Kelvin  in  Shanghai City
