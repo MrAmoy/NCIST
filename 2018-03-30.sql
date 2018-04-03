@@ -118,56 +118,165 @@ import -导入  -还原  -Restore/Recovery
 环境：仅适用于服务器
 效率：一般，较慢
 【甲骨文备份】：
-1.完全模式-FULL
-[格式]：
-EXP 用户/密码[@数据库实例] FILE=备份的位置/备份文件.DMP  FULL=Y
-[示例]：备份所有用户的所有表结构和数据
-EXP scott/tiger@orcl  FILE=D:/BACKUP/FULL20180330.DMP  FULL=Y
+1.完全模式-FULL-所有用户（多）
+	[格式]：
+	EXP 用户/密码[@数据库实例] FILE=备份的位置/备份文件.DMP  FULL=Y
+
+	[示例]：备份所有用户的所有表结构和数据
+	EXP scott/tiger@orcl  FILE=D:/BACKUP/FULL20180330.DMP  FULL=Y
 
 
-2.用户模式-OWNER
-[格式]：
-EXP 用户/密码[@数据库实例] FILE=备份的位置/备份文件.DMP OWNER=用户名
+2.用户模式-OWNER-默认导出的模式-指定用户（单）
+	[格式]：
+	EXP 用户/密码[@数据库实例] FILE=备份的位置/备份文件.DMP OWNER=用户名
 
-[示例]：
-EXP scott/tiger@orcl  FILE=D:/BACKUP/FULL20180330.DMP OWNER=scott
+	[注意]：
+	如果按用户模式，导出多个用户，则在用户之间用英文逗号分隔！
+
+	[示例]：
+	EXP scott/tiger@orcl  FILE=D:/BACKUP/FULL20180330.DMP OWNER=scott,xishi
+	相当于：
+	EXP scott/tiger@orcl  FILE=D:/BACKUP/FULL20180330.DMP OWNER=scott
+	EXP scott/tiger@orcl  FILE=D:/BACKUP/FULL20180330.DMP OWNER=xishi
 
 3.表模式-TABLE
-[格式]：
-EXP 用户/密码[@数据库实例] FILE=备份的位置/备份文件.DMP TABLES=表1，表2...
+	[格式]：
+	EXP 用户/密码[@数据库实例] FILE=备份的位置/备份文件.DMP TABLES=表1，表2...
 
-[示例]：
-EXP scott/tiger[@数据库实例] FILE=D:/backup/FULL20180330.DMP TABLES=EMP,DEPT
+	[注意]：
+	如果按表模式，导出多个指定表，则在表之间用英文逗号分隔！
+
+	[示例]：
+	推荐：
+	EXP scott/tiger[@数据库实例] FILE=D:/backup/FULL20180330.DMP TABLES=EMP,DEPT
+	相当于：
+	EXP scott/tiger[@数据库实例] FILE=D:/backup/FULL20180330.DMP TABLES=EMP
+	EXP scott/tiger[@数据库实例] FILE=D:/backup/FULL20180330.DMP TABLES=DEPT
+
+【甲骨文中用户scott的表分析】：4张表
+SQLPLUS /NOLOG
+GRANT CONNECT,RESOURCE,DBA TO SCOTT;
+CONN SCOTT/tiger;
+SHOW USER;
+SELECT * FROM TAB;
+
+四张表详情：
+1.BONUS		-福利表（奖金、津贴、补助）-4列
+	ENAME	-员工姓名
+	JOB		-工作岗位
+	SAL 	-基本工资
+	COMM 	-额外收入
+
+2.DEPT 		-部门表  -Department -3列
+	DEPTNO 	-部门编号
+	DNAME	-部门名称
+	LOC		-部门位置 -Location
+
+3.EMP 		-员工表 	-Employee （重要） -8列
+	EMPNO	-员工编号
+	ENAME	-员工姓名
+	JOB		-员工岗位
+	MGR		-上级领导
+	HIREDATE-聘用日期
+	SAL 	-基本工资
+	COMM 	-额外收入
+	DEPTTNO -部门编号
+
+4.SALGRADE 	-工资等级表 -Salary Grade -3列
+	GRADE 	-工资等级
+	LOSAL 	-最低工资 Lowest Salary
+	HISAL 	-最高工资 Highest Salary
+
+
+【甲骨文还原】：
+
+1.完全模式-FULL-所有用户（多）
+	[格式]：
+	IMP 用户/密码[@数据库实例] FILE=备份的位置/备份文件.DMP  FULL=Y
+
+	[示例]：备份所有用户的所有表结构和数据
+	IMP scott/tiger@orcl  FILE=D:/BACKUP/FULL20180330.DMP  FULL=Y
+
+
+2.用户模式-OWNER-默认导出的模式-指定用户（单）
+	[格式]：
+	情况一：（不跨用户，还给自己）
+	IMP 用户/密码[@数据库实例] FILE=备份的位置/备份文件.DMP FROMUSER=用户名1 TOUSER=用户名1
+
+	情况二：（跨用户，还给他人）
+	IMP 用户/密码[@数据库实例] FILE=备份的位置/备份文件.DMP FROMUSER=用户名1 TOUSER=用户名2
+
+	[示例]：
+	情况一：（不跨用户，还给自己）
+	IMP scott/tiger@orcl  FILE=D:/BACKUP/FULL20180330.DMP FROMUSER=scott TOUSER=scott
+
+	情况二：（跨用户）
+	IMP scott/tiger@orcl  FILE=D:/BACKUP/FULL20180330.DMP FROMUSER=scott TOUSER=diaochan
+
+
+3.表模式-TABLE
+	[格式]：
+	IMP 用户/密码[@数据库实例] FILE=备份的位置/备份文件.DMP TABLES=表1，表2...
+
+	[注意]：
+	如果按表模式，导入多个指定表，则在表之间用英文逗号分隔！
+
+	[示例]：
+	推荐：
+	IMP scott/tiger[@数据库实例] FILE=D:/backup/FULL20180330.DMP TABLES=EMP,DEPT
+	相当于：
+	IMP scott/tiger[@数据库实例] FILE=D:/backup/FULL20180330.DMP TABLES=EMP
+	IMP scott/tiger[@数据库实例] FILE=D:/backup/FULL20180330.DMP TABLES=DEPT
+
+	[注意]：
+	采用什么模式备份，必须采用相应模式还原！
+	FULL<->FULL     OWNER<->USER   TABLE<->TABLE
+
+	采用FULL/TABLE格式备份，还原时，只要修改EXP为IMP
+
+	但是，OWNER格式备份后，还原要适当变化！
+	FROMUSER=从来源用户   TOUSER=还原给指定目标用户
+	分两种情况：
+	A. 还给自己     来源用户与目标用户  -相同（不跨用户）
+	B. 还给别人     来源用户与目标用户  -不同（跨用户）
+
+	[甲骨文空表导出策略]：
+	系统开发中，有些特殊的表，只有结构，没有数据，称为空表。空表是不可忽略的，一旦使用空表，因人为破坏或者自动备份忽略掉了，系统会报错。
+
+	甲骨文为了节省空间，默认是不会导出空表的！
+	控制空表导出，依靠一个重要的参数：
+	DEFERRED_SEGMENT_CREATION      断延迟创建（延迟，延期）
+
+	查看系统断延迟参数：
+	***show parameters deferred_segment_creation;
+	修改断延迟参数的值：
+	alter system set deferred_segment_creation=false scope=both
+	alter system set deferred_segment_creation=true  scope=both
+	此参数类型为布尔型，取值分别为真或假。
+	默认值为真。
+	当参数为真时，不会导出空表。
+	当参数为假时，就会导出空表。
+	所以，建议在创建表时，提前设置此参数为假FALSE，后面的空表都会导出。
+
+	[scope范围取值问题]：
+	scope=memory  内存   -读写速度快，但一断电就消失。  ns-纳秒（速度快）
+	scope=spfile  系统进程文件（硬盘） -读写速度慢，持久化存储，断电不会消失  ms-毫秒（保存长久）
+	scope=both  兼顾上两种优点，读写既快速又能保存持久****
+
+	解决空表导出的建议：
+	1.建表前，先设置断延迟参数为假，保证之后的所有空表导出；
+	2.建表后，设置断延迟参数为假，对之前的空表都是无法导出的，只对之后的空表有效。此类情况，建议，在空表中插入任意一条记录，可保留也可删除此纪录。这样，空表就可以导出。
+	甲骨文公司规定：表中无值，不会分配空间给表；
+
+	甲骨文逻辑分区：（从大到小）
+	Tablespace->segment(Table)->extend->Block(uniform)
 
 
 
 【方法二：数据泵技术】：
-命令：
-export dump -导出  -expdp  -备份  -Backup
-import dump -导出  -imdpd  -还原  -Restore/Recovery
+	命令：
+	export dump -导出  -expdp  -备份  -Backup
+	import dump -导出  -imdpd  -还原  -Restore/Recovery
 
-环境：仅适用于服务器
-效率：高级，较快
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	环境：仅适用于服务器
+	效率：高级，较快
